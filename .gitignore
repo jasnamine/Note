@@ -1,0 +1,6 @@
+# File .gitignore
+*.txt
+*.drawio
+migrations/
+node_modules/
+.env
