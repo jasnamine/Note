@@ -59,6 +59,16 @@ Main libraries used in this project:
 
 ---
 
+## 🎨 UI/UX Design (Figma)
+
+This is a simple and basic Figma design for the NoteSpace project.
+It covers the main screens and components needed for a note-taking application, serving as an initial design reference before implementation.
+
+🔗 **Figma Link:**  
+https://www.figma.com/community/file/1588121746989204759
+
+---
+
 ## ⚙️ Installation & Setup
 
 ### Clone the repository
