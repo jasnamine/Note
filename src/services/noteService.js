@@ -35,7 +35,6 @@ const addNote = async (noteData, userId, files) => {
     if (files.length > 0) {
       const noteImages = files.map((file) => ({
         noteID: createdNote.id,
-        type: "image",
         url: file.path,
       }));
       await db.NoteImage.bulkCreate(noteImages);
@@ -186,7 +185,7 @@ const getNotes = async (userId) => {
         {
           model: db.NoteImage,
           as: "images",
-          attributes: ["id", "url", "type"],
+          attributes: ["id", "url"],
         },
         {
           model: db.Reminder,
@@ -248,7 +247,7 @@ const getPinnedNotes = async (userId) => {
         {
           model: db.NoteImage,
           as: "images",
-          attributes: ["id", "url", "type"],
+          attributes: ["id", "url"],
         },
         {
           model: db.Reminder,
@@ -327,7 +326,7 @@ const getNotesByTag = async (userId, tagId) => {
         {
           model: db.NoteImage,
           as: "images",
-          attributes: ["id", "url", "type"],
+          attributes: ["id", "url"],
           required: false,
         },
         {
@@ -392,7 +391,7 @@ const getCollabNotes = async (userId) => {
             {
               model: db.NoteImage,
               as: "images",
-              attributes: ["id", "url", "type"],
+              attributes: ["id", "url"],
             },
             {
               model: db.Reminder,
@@ -538,7 +537,7 @@ const getDeletedNotes = async (userId) => {
         {
           model: db.NoteImage,
           as: "images",
-          attributes: ["id", "url", "type"],
+          attributes: ["id", "url"],
         },
         {
           model: db.Reminder,
@@ -590,7 +589,10 @@ const restoreNote = async (noteId, userId) => {
     });
 
     if (!note) {
-      throw new CustomError("Note not found in trash or unauthorized", StatusCodes.NOT_FOUND);
+      throw new CustomError(
+        "Note not found in trash or unauthorized",
+        StatusCodes.NOT_FOUND
+      );
     }
 
     await note.restore();
@@ -619,7 +621,10 @@ const deleteNote = async (noteId, userId) => {
 
     // Kiểm tra quyền: Chỉ chính chủ
     if (note.userID !== userId) {
-      throw new CustomError("Unauthorized to delete note", StatusCodes.FORBIDDEN);
+      throw new CustomError(
+        "Unauthorized to delete note",
+        StatusCodes.FORBIDDEN
+      );
     }
 
     await Promise.all([
@@ -660,7 +665,10 @@ const pinNote = async (noteId, userId, isPinned) => {
     const date = new Date();
 
     if (!note) {
-      throw new CustomError("Note not found or unauthorized", StatusCodes.NOT_FOUND);
+      throw new CustomError(
+        "Note not found or unauthorized",
+        StatusCodes.NOT_FOUND
+      );
     }
 
     await db.NotePreference.update(
@@ -771,7 +779,10 @@ const archivedNote = async (userId, noteId, isArchived) => {
     });
 
     if (!note) {
-      throw new CustomError("Note not found or unauthorized", StatusCodes.NOT_FOUND);
+      throw new CustomError(
+        "Note not found or unauthorized",
+        StatusCodes.NOT_FOUND
+      );
     }
 
     await db.NotePreference.update(
@@ -817,7 +828,7 @@ const getArchivedNotes = async (userId) => {
         {
           model: db.NoteImage,
           as: "images",
-          attributes: ["id", "url", "type"],
+          attributes: ["id", "url"],
         },
         {
           model: db.Reminder,
@@ -882,4 +893,3 @@ module.exports = {
   getPinnedNotes,
   getNotesByTag,
 };
-

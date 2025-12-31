@@ -193,7 +193,11 @@ const updateReminder = async (userId, noteId, reminderId, time, repeat) => {
       modifiedAt: new Date(),
     });
 
-    return { statusCode: StatusCodes.OK, message: "Reminder updated" };
+    return {
+      statusCode: StatusCodes.OK,
+      message: "Reminder updated",
+      DT: { id: reminderId, time, repeat, noteId },
+    };
   } catch (error) {
     throw error;
   }
@@ -242,8 +246,6 @@ const deleteReminder = async (userId, noteId, reminderId) => {
     throw error;
   }
 };
-
-
 
 module.exports = {
   sendEmailRemind,
