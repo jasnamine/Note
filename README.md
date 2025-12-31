@@ -1,12 +1,70 @@
-# React + Vite
+# 📝 NoteSpace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NoteSpace is a modern web-based note-taking application inspired by Google Keep, developed using React, Vite, and Material UI. The application provides features such as note management, labeling, reminders, drawing notes, collaboration, dark mode, and multi-language support.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- ✏️ Create, edit, delete notes
+- 📌 Pin / Unpin notes
+- 🗂️ Labels (add, edit, delete, filter notes by label)
+- 🗑️ Trash & Archive notes
+- ⏰ Reminders
+- 🎨 Change note color & theme
+- 🖌️ Drawing notes (canvas)
+- ☑️ Checklist notes
+- 👥 Collaboration (invite users, permissions)
+- 🔔 Notifications
+- 🌙 Light / Dark mode
+- 🌍 Multi-language (i18n: English & Vietnamese)
+- 🔐 Authentication (JWT, Google Login)
+- 💾 Persisted state with Redux Persist
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 19**
+- **Vite**
+- **React Router v6**
+- **Redux Toolkit**
+- **Redux Persist**
+- **React Hook Form + Yup**
+- **Material UI (MUI v7)**
+- **i18next (multi-language)**
+- **React Sketch Canvas**
+
+### Utilities
+- Axios
+- Day.js / date-fns
+- UUID
+- JWT Decode
+
+---
+
+## 📦 Dependencies
+
+Main libraries used in this project:
+
+- `@mui/material`, `@mui/icons-material`, `@mui/lab`
+- `@reduxjs/toolkit`, `react-redux`
+- `react-router-dom`
+- `react-hook-form`, `yup`
+- `react-i18next`
+- `react-sketch-canvas`
+- `redux-persist`
+- `axios`
+
+---
+
+## ⚙️ Installation & Setup
+
+### Clone the repository
+
+```bash
+git clone https://github.com/your-username/note-space.git
+cd google-keep-note
+npm install
+npm run dev
