@@ -1,6 +1,7 @@
 import AddAlertOutlinedIcon from "@mui/icons-material/AddAlertOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
@@ -15,8 +16,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import { memo, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { leaveNote } from "../../redux/api/collab";
 import { uploadImageNote } from "../../redux/api/imageNote";
 import {
   archivedNote,
@@ -31,7 +34,6 @@ import LabelMenu from "../Menu/LabelMenu";
 import ReminderMenu from "../Menu/ReminderMenu";
 import CollabModal from "../Modal/CollabModal";
 import VersionHistoryModal from "../Modal/VersionHistoryModal";
-import { useTranslation } from "react-i18next";
 
 function ButtonIcon({
   onImageUpload,
@@ -52,7 +54,7 @@ function ButtonIcon({
   isEdit,
 }) {
   const dispatch = useDispatch();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [moreAnchor, setMoreAnchor] = useState(null);
   const [tagAnchor, setTagAnchor] = useState(null);
   const [anchorNotify, setAnchorNotify] = useState(null);
@@ -61,21 +63,23 @@ function ButtonIcon({
   const [openHistoryModal, setOpenHistoryModal] = useState(false);
 
   const [selectedColor, setLocalSelectedColor] = useState(
-    note?.color || "Default"
+    note?.color || "Default",
   );
   const [selectedTheme, setLocalSelectedTheme] = useState(
-    note?.theme || "Default"
+    note?.theme || "Default",
   );
 
   const moreButtonRef = useRef(null);
   const imageInputRef = useRef();
   const navigate = useNavigate();
+  const isViewer = permission === "view";
+  const isEditor = permission === "edit";
+  const isRestricted = isViewer || isEditor;
 
   const tags = useSelector((state) => state.tag.listTags);
 
   const currentNote = note || {};
 
-  // Select tag
   const selectedTags = (currentNote.tags || []).map((tag) => tag.id);
 
   // Fetching note tags
@@ -145,6 +149,17 @@ function ButtonIcon({
       });
   };
 
+  // Leave note
+  const handleLeaveNote = () => {
+    if (window.confirm(t("Are you sure you want to leave this note?"))) {
+      dispatch(leaveNote({ noteId }))
+        .unwrap()
+        .catch((err) => {
+          console.error("Leave note failed:", err);
+        });
+    }
+  };
+
   // Handle color and theme selection
   const handleSelectColor = (color) => {
     setLocalSelectedColor(color);
@@ -156,7 +171,7 @@ function ButtonIcon({
           noteId,
           color,
           theme: selectedTheme || "Default",
-        })
+        }),
       );
     }
   };
@@ -171,7 +186,7 @@ function ButtonIcon({
           noteId,
           color: selectedColor || "Default",
           theme,
-        })
+        }),
       );
     }
   };
@@ -193,12 +208,12 @@ function ButtonIcon({
       {note?.deletedAt ? (
         <>
           <Tooltip title={t("delete forever")}>
-            <IconButton onClick={handleDeleteNote}>
+            <IconButton disabled={isRestricted} onClick={handleDeleteNote}>
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title={t("restore")}>
-            <IconButton onClick={handleRestoreNote}>
+            <IconButton disabled={isRestricted} onClick={handleRestoreNote}>
               <RestoreFromTrashIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -207,7 +222,10 @@ function ButtonIcon({
         <>
           {/* Start reminder */}
           <Tooltip title={t("reminder")}>
-            <IconButton onClick={(e) => setAnchorNotify(e.currentTarget)}>
+            <IconButton
+              disabled={isViewer}
+              onClick={(e) => setAnchorNotify(e.currentTarget)}
+            >
               <AddAlertOutlinedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -224,7 +242,10 @@ function ButtonIcon({
 
           {/* Start selected color and theme */}
           <Tooltip title={t("paint")}>
-            <IconButton onClick={(e) => setPaintAnchor(e.currentTarget)}>
+            <IconButton
+              disabled={isViewer}
+              onClick={(e) => setPaintAnchor(e.currentTarget)}
+            >
               <PaletteOutlinedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -240,7 +261,10 @@ function ButtonIcon({
           {/* End selected color and theme */}
 
           <Tooltip title={t("image")}>
-            <IconButton onClick={() => imageInputRef.current.click()}>
+            <IconButton
+              disabled={isViewer}
+              onClick={() => imageInputRef.current.click()}
+            >
               <ImageOutlinedIcon fontSize="small" />
             </IconButton>
             <input
@@ -256,21 +280,29 @@ function ButtonIcon({
           {/* Start collab */}
           {!isNewNote && (
             <>
-              <Tooltip title={t("collab")}>
-                <span>
-                  <IconButton
-                    onClick={() => setOpenCollab(true)}
-                    disabled={permission}
-                  >
+              {!isRestricted && (
+                <Tooltip title={t("collab")}>
+                  <IconButton onClick={() => setOpenCollab(true)}>
                     <PersonAddAltOutlinedIcon fontSize="small" />
                   </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={isArchived ? t("restore") : t("archive")}>
-                <IconButton onClick={() => handleArchiveNote(isArchived)}>
-                  <ArchiveOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                </Tooltip>
+              )}
+
+              {!isRestricted && (
+                <Tooltip title={isArchived ? t("restore") : t("archive")}>
+                  <IconButton onClick={() => handleArchiveNote(isArchived)}>
+                    <ArchiveOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {isRestricted && (
+                <Tooltip title={t("leave note")}>
+                  <IconButton onClick={handleLeaveNote} color="error">
+                    <ExitToAppIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
 
@@ -308,14 +340,15 @@ function ButtonIcon({
               {t("add label")}
             </MenuItem>
             <MenuItem
+              disabled={isViewer}
               onClick={() => {
-                setMoreAnchor(null), navigate(`/draw/${noteId}`);
+                (setMoreAnchor(null), navigate(`/draw/${noteId}`));
               }}
             >
               {t("add drawing")}
             </MenuItem>
             {!isNewNote && (
-              <MenuItem onClick={handlesoftDeleteNote} disabled={permission}>
+              <MenuItem onClick={handlesoftDeleteNote} disabled={isRestricted}>
                 {t("delete note")}
               </MenuItem>
             )}

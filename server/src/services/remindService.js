@@ -2,104 +2,120 @@ const moment = require("moment-timezone");
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
 const { sendEmail } = require("../ultities/email");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 const { Op } = require("sequelize");
 
 const sendEmailRemind = async () => {
   try {
-    const statuses = await db.ReminderUserStatus.findAll({
-      where: { status: "pending", reminderID: { [Op.ne]: null } },
+    const localTZ = moment.tz.guess();
+    const now = moment().tz(localTZ);
+
+    const startTime = now.clone().subtract(1, "minutes").toDate(); 
+    const endTime = now.clone().add(1, "minutes").toDate(); 
+
+    const pendingTasks = await db.ReminderUserStatus.findAll({
+      where: {
+        status: "pending",
+      },
       include: [
         {
           model: db.Reminder,
           as: "reminder",
+          where: {
+            time: {
+              [Op.between]: [startTime, endTime],
+            },
+          },
           include: [
             {
               model: db.Note,
               as: "note",
-              include: [
-                {
-                  model: db.User,
-                  as: "owner",
-                  attributes: ["id", "username", "email"],
-                },
-                { model: db.NoteCollaborator, as: "collaborators" },
-              ],
+              where: { deletedAt: null },
             },
           ],
         },
-        { model: db.User, as: "user", attributes: ["id", "username", "email"] },
+        {
+          model: db.User,
+          as: "user",
+          attributes: ["id", "email", "username"],
+        },
       ],
     });
 
-    const localTZ = moment.tz.guess();
-    const now = moment().tz(localTZ);
+    if (pendingTasks.length === 0) return;
 
-    for (const status of statuses) {
-      const r = status.reminder;
-      const note = r.note;
-      const user = status.user;
-
-      if (!note || !user) continue;
-
+    for (const task of pendingTasks) {
+      const r = task.reminder;
+      const user = task.user;
       const reminderTime = moment.utc(r.time).tz(localTZ);
-      const timeDiff = Math.abs(now.diff(reminderTime, "minutes")) <= 15;
 
-      let send = false;
+      let shouldSend = false;
+
       switch (r.repeat) {
         case "none":
-          send = !status.lastNotified && timeDiff;
+          shouldSend = !task.lastNotified;
           break;
         case "daily":
-          send =
-            timeDiff &&
-            (!status.lastNotified ||
-              !moment(status.lastNotified).isSame(now, "day"));
+          shouldSend =
+            !task.lastNotified || !moment(task.lastNotified).isSame(now, "day");
           break;
         case "weekly":
-          send =
+          shouldSend =
             now.isoWeekday() === reminderTime.isoWeekday() &&
-            timeDiff &&
-            (!status.lastNotified ||
-              !moment(status.lastNotified).isSame(now, "week"));
+            (!task.lastNotified ||
+              !moment(task.lastNotified).isSame(now, "week"));
           break;
         case "monthly":
           const targetDay = reminderTime.date();
-          const maxDay = now.clone().endOf("month").date();
-          send =
-            now.date() === Math.min(targetDay, maxDay) &&
-            timeDiff &&
-            (!status.lastNotified ||
-              !moment(status.lastNotified).isSame(now, "month"));
+          const maxDayInMonth = now.clone().endOf("month").date();
+          const actualDayToRemind = Math.min(targetDay, maxDayInMonth);
+
+          shouldSend =
+            now.date() === actualDayToRemind &&
+            (!task.lastNotified ||
+              !moment(task.lastNotified).isSame(now, "month"));
           break;
       }
 
-      if (!send) continue;
+      if (shouldSend) {
+        try {
+          await sendEmail({
+            to: user.email,
+            subject: `[NoteSpace] Reminder: ${r.note.title}`,
+            html: `
+              <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+                <h2 style="color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Reminder Notification</h2>
+                <p>Hi <b>${user.username}</b>,</p>
+                <p>This is a friendly reminder for your note:</p>
+                <div style="background-color: #f3f4f6; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0;">
+                   <strong style="font-size: 1.2em; color: #1e40af;">${r.note.title}</strong>
+                </div>
+                <p><b>Scheduled Time:</b> ${reminderTime.format("hh:mm A, dddd, MMMM Do YYYY")}</p>
+                <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
+                <p style="font-size: 0.85em; color: #6b7280;">
+                  This is an automated message from <b>NoteSpace</b>. <br/>
+                  If you no longer wish to receive these reminders, you can manage them in your note settings.
+                </p>
+              </div>
+            `,
+          });
 
-      // Gửi email
-      const noteTitle = note.title || "Untitled Note";
-      const subject = `Reminder: ${noteTitle}`;
-      const text = `Hi ${
-        user.username
-      },\n\nYou have an upcoming reminder for "${noteTitle}" at ${reminderTime.format(
-        "YYYY-MM-DD HH:mm"
-      )}.\n\nDon’t forget!\n\n— JAS Reminder`;
+          const updateData = { lastNotified: new Date() };
 
-      await sendEmail({
-        from: `"JAS Reminder" <${process.env.EMAIL_NAME}>`,
-        to: user.email,
-        subject,
-        text,
-      });
+          if (r.repeat === "none") {
+            updateData.status = "sent";
+          }
 
-      await db.ReminderUserStatus.update(
-        { lastNotified: new Date(), status: "sent" },
-        { where: { id: status.id } }
-      );
+          await task.update(updateData);
+
+          console.log(`Successfully sent reminder to ${user.email}`);
+        } catch (mailErr) {
+          console.error(`Failed to send email to ${user.email}:`, mailErr);
+        }
+      }
     }
-
-    return { statusCode: StatusCodes.OK, message: "Reminders processed" };
   } catch (error) {
+    console.error("Error in sendEmailRemind service:", error);
     throw error;
   }
 };
@@ -118,7 +134,7 @@ const createReminder = async (userId, noteId, time, repeat) => {
     ) {
       throw new CustomError(
         "Note not found or unauthorized",
-        StatusCodes.FORBIDDEN
+        StatusCodes.FORBIDDEN,
       );
     }
 
@@ -168,7 +184,7 @@ const updateReminder = async (userId, noteId, reminderId, time, repeat) => {
     ) {
       throw new CustomError(
         "Note not found or unauthorized",
-        StatusCodes.FORBIDDEN
+        StatusCodes.FORBIDDEN,
       );
     }
 
@@ -182,7 +198,7 @@ const updateReminder = async (userId, noteId, reminderId, time, repeat) => {
 
     await db.ReminderUserStatus.update(
       { lastNotified: null, status: "pending" },
-      { where: { reminderID: reminderId } }
+      { where: { reminderID: reminderId } },
     );
 
     await db.NoteHistory.create({
@@ -217,7 +233,7 @@ const deleteReminder = async (userId, noteId, reminderId) => {
     )
       throw new CustomError(
         "Note not found or unauthorized",
-        StatusCodes.FORBIDDEN
+        StatusCodes.FORBIDDEN,
       );
 
     const reminder = await db.Reminder.findOne({

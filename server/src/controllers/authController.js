@@ -1,5 +1,5 @@
-import { StatusCodes } from "http-status-codes";
-import authService from "../services/authService";
+const { StatusCodes } = require("http-status-codes");
+const authService = require("../services/authService");
 const passport = require("passport");
 const CustomError = require("../ultities/CustomError");
 require("dotenv").config();
@@ -46,7 +46,7 @@ const requestRefreshToken = async (req, res, next) => {
     if (!refreshToken) {
       throw new CustomError(
         "No refresh token provided",
-        StatusCodes.BAD_REQUEST
+        StatusCodes.BAD_REQUEST,
       );
     }
 
@@ -63,7 +63,7 @@ const logout = async (req, res, next) => {
     if (!refreshToken) {
       throw new CustomError(
         "No refresh token provided",
-        StatusCodes.BAD_REQUEST
+        StatusCodes.BAD_REQUEST,
       );
     }
 
@@ -77,7 +77,6 @@ const logout = async (req, res, next) => {
 const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-
     const response = await authService.forgotPassword(email);
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

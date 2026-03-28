@@ -1,6 +1,6 @@
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const getUser = async (id) => {
   try {

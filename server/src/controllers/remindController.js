@@ -1,5 +1,5 @@
-import { StatusCodes } from "http-status-codes";
-import remindService from "../services/remindService";
+const { StatusCodes } = require("http-status-codes");
+const remindService = require("../services/remindService");
 
 const createReminder = async (req, res, next) => {
   try {
@@ -12,7 +12,7 @@ const createReminder = async (req, res, next) => {
       userId,
       noteId,
       time,
-      repeat
+      repeat,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -28,7 +28,7 @@ const createMultipleReminders = async (req, res, next) => {
     const response = await remindService.createMultipleReminders(
       userId,
       noteId,
-      reminders
+      reminders,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -48,7 +48,7 @@ const updateReminder = async (req, res, next) => {
       noteId,
       reminderId,
       time,
-      repeat
+      repeat,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -65,7 +65,7 @@ const deleteReminder = async (req, res, next) => {
     const response = await remindService.deleteReminder(
       userId,
       noteId,
-      reminderId
+      reminderId,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

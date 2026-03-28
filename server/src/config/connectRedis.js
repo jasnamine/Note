@@ -9,7 +9,7 @@ const client = redis.createClient({
 
 (async () => {
   try {
-    await client.connect(); // Kết nối Redis trước khi gọi lệnh
+    await client.connect();
     console.log("Redis connected");
 
     client.ping().then((pong) => {

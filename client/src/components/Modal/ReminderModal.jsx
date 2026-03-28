@@ -50,7 +50,6 @@ const ReminderModal = ({
         setSelectedTime(date);
         setRepeat(initialReminder.repeat);
       } else {
-        // Reset về thời gian hiện tại khi tạo mới
         const now = new Date();
         setSelectedDate(now);
         setSelectedTime(now);
@@ -122,7 +121,6 @@ const ReminderModal = ({
             slotProps={{ textField: { fullWidth: true, margin: "normal" } }}
           />
 
-          {/* Responsive */}
           {isMobile ? (
             <MobileTimePicker
               label={t("pick a time")}

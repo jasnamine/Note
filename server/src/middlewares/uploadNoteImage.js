@@ -13,7 +13,7 @@ const storage = new CloudinaryStorage({
 
 const uploadNoteImage = multer({
   storage,
-  limits: { files: 15 }, // Giới hạn tối đa 15 ảnh/note
+  limits: { files: 15 },
 });
 
 module.exports = uploadNoteImage;

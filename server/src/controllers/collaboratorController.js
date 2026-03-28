@@ -1,5 +1,5 @@
-import { StatusCodes } from "http-status-codes";
-import collaboratorService from "../services/collaboratorService";
+const { StatusCodes } = require("http-status-codes");
+const collaboratorService = require("../services/collaboratorService");
 require("dotenv").config();
 
 const getCollaborators = async (req, res, next) => {
@@ -21,7 +21,7 @@ const addCollaboratorInvitation = async (req, res, next) => {
     const response = await collaboratorService.addCollaboratorInvitation(
       userId,
       noteId,
-      { email, permission }
+      { email, permission },
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -31,14 +31,9 @@ const addCollaboratorInvitation = async (req, res, next) => {
 
 const acceptCollaboratorInvitation = async (req, res, next) => {
   try {
-    const invitationId = req.params.invitationId;
-    const { status, inviterId } = req.body;
-    const userId = req.user.id;
+    const { token } = req.query;
     const response = await collaboratorService.acceptCollaboratorInvitation(
-      invitationId,
-      inviterId,
-      userId,
-      status
+      token,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -64,7 +59,7 @@ const removeCollaborator = async (req, res, next) => {
     const response = await collaboratorService.removeCollaborator(
       noteId,
       collaboratorUserId,
-      userId
+      userId,
     );
 
     return res.status(StatusCodes.OK).json(response);
@@ -82,7 +77,7 @@ const updateCollaboratorPermission = async (req, res, next) => {
       userId,
       noteId,
       collaboratorUserId,
-      newPermission
+      newPermission,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

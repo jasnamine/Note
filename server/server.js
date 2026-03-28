@@ -1,13 +1,14 @@
 require("dotenv").config();
+require("./src/config/connectRedis.js");
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const { sendReminderJob } = require("../server/src/ultities/jobs.js");
 
 const configCors = require("./src/config/cors.js");
-require("./src/config/connectRedis.js");
 
 const connection = require("./src/config/connectDB.js");
 const initRoutes = require("./src/routes");
+const passport = require("passport");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -23,7 +24,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 require("./passport.js");
-const passport = require("passport");
 
 // Middleware
 app.use(passport.initialize());

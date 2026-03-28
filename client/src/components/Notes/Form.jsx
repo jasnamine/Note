@@ -138,19 +138,16 @@ function Form() {
   const onSubmit = async (data) => {
     const formData = new FormData();
 
-    // Append title, color, and theme
     formData.append("title", data.title);
     formData.append("color", data.color || "Default");
     formData.append("theme", data.theme || "Default");
 
-    // Check checklist
     const validChecklist = data.checklistItems?.filter(
       (item) => item?.title?.trim() !== ""
     );
 
     const hasChecklist = validChecklist.length > 0;
 
-    // If checklist exists
     if (hasChecklist && validChecklist.length > 0) {
       validChecklist.forEach((item, index) => {
         const { id, ...rest } = item;
@@ -447,7 +444,6 @@ function Form() {
                 setTempTags([]);
                 setTempReminders([]);
                 setShowChecklist(false);
-                // dispatch(clearDrawings());
               }}
             >
               {t("reset")}

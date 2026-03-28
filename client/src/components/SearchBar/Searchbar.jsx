@@ -4,7 +4,12 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { searchNote } from "../../redux/api/note";
+import {
+  getCollabNotes,
+  getNotes,
+  getPinnedNotes,
+  searchNote,
+} from "../../redux/api/note";
 
 function SearchBar() {
   const [searchText, setSearchText] = useState("");
@@ -14,16 +19,27 @@ function SearchBar() {
 
   const handleClear = () => {
     setSearchText("");
+    dispatch(getNotes());
+
+    dispatch(getPinnedNotes());
+
+    dispatch(getCollabNotes());
   };
 
-  const handleSearch = () => {
-    dispatch(searchNote({ keyword: searchText }));
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    if (searchText.trim()) {
+      dispatch(searchNote({ keyword: searchText }));
+    } else {
+      dispatch(getNotes());
+    }
   };
 
   const isDarkMode = theme.palette.mode === "dark";
 
   return (
     <Paper
+      onSubmit={handleSearch}
       component="form"
       sx={{
         p: "2px 4px",
@@ -36,8 +52,8 @@ function SearchBar() {
             ? theme.palette.background.paper
             : "#ffffff"
           : isDarkMode
-          ? theme.palette.action.hover
-          : "#f1f3f4",
+            ? theme.palette.action.hover
+            : "#f1f3f4",
         transition: "all 0.2s ease",
         boxShadow: isFocused
           ? isDarkMode
@@ -61,6 +77,7 @@ function SearchBar() {
             color: theme.palette.text.primary,
           },
         }}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />

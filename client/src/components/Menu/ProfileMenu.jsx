@@ -32,20 +32,14 @@ const handleLogout = async () => {
   try {
     await dispatch(logout()).unwrap();
 
-    // Xóa accessToken trong memory
     setAccessToken(null);
 
-    // Xóa localStorage
     localStorage.clear();
 
-    // Reset store
     dispatch(resetStore());
 
-    // Purge Redux Persist
     await persistor.purge();
 
-    // Cuối cùng, chuyển hướng về login
-    // window.location.href = "/login"; // dùng window.location để đảm bảo reload sạch
   } catch (err) {
     console.error("Logout failed:", err);
   }

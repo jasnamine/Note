@@ -10,15 +10,12 @@ passport.use(
       callbackURL: process.env.GOOGLE_REDIRECT_URI,
     },
     async (accessToken, refreshToken, profile, cb) => {
-      // Thêm user vào database
       try {
         const { id: googleId, emails, displayName: fullname } = profile;
         const email = emails[0].value;
 
-        // Tìm user bằng googleId
         let user = await db.User.findOne({ where: { googleId } });
 
-        // Nếu không có, tìm bằng email và cập nhật googleId.
         if (!user) {
           user = await db.User.findOne({ where: { email } });
           if (user) {
@@ -26,7 +23,6 @@ passport.use(
             await user.save();
           }
 
-          // Nếu chưa tồn tại, tạo user mới với username từ email, không cần password.
           else {
             user = await db.User.create({
               email,
@@ -38,8 +34,6 @@ passport.use(
             });
           }
         }
-
-
         return cb(null, user);
       } catch (error) {
         return cb(error);

@@ -1,5 +1,5 @@
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const validate = (schema) => {
   return (req, res, next) => {

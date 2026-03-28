@@ -30,11 +30,6 @@ module.exports = (sequelize, DataTypes) => {
         as: "sentInvitations",
         onDelete: "CASCADE",
       });
-      User.hasMany(models.Notification, {
-        foreignKey: "userID",
-        as: "notifications",
-        onDelete: "CASCADE",
-      });
     }
   }
   User.init(

@@ -13,6 +13,7 @@ import {
   restoreNote,
   settingNote,
   softDeleteNote,
+  searchNote
 } from "../../api/note";
 
 export const noteExtraReducers = (builder, handlePending, handleRejected) => {
@@ -34,6 +35,42 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
     })
     .addCase(getNotes.rejected, (state, action) => {
       handleRejected(state, action, "Failed to fetch notes");
+    })
+
+    .addCase(searchNote.pending, (state) => {
+      state.loading = true;
+      state.listNotes = [];
+      state.pinnedNotes = [];
+      state.archivedNotes = [];
+      state.listNotesByTag = [];
+    })
+    .addCase(searchNote.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = false;
+      state.success = true;
+      state.message = action.payload.EM;
+
+      const searchResults = action.payload.DT || [];
+
+      // Ghi đè hoàn toàn: Chỉ giữ lại kết quả từ API search trả về
+      state.listNotes = searchResults.map((note) => ({
+        ...note,
+        tags: note.tags || [],
+        reminders: note.reminders || [],
+        images: note.images || [],
+        collaborators: note.collaborator || [], // Dùng đúng key từ JSON bạn gửi
+      }));
+
+      // ĐẢM BẢO CÁC MẢNG NÀY TRỐNG:
+      // Để giao diện không render đè các note cũ từ các mục khác
+      state.pinnedNotes = [];
+      state.archivedNotes = [];
+      state.listNotesByTag = [];
+      state.deleteNotes = [];
+      state.collabNotes = [];
+    })
+    .addCase(searchNote.rejected, (state, action) => {
+      handleRejected(state, action, "Search failed");
     })
 
     // Add note
@@ -136,7 +173,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
         noteByTag.isDeleted = true;
         state.deleteNotes.push(archivedNote);
         state.listNotesByTag = state.listNotesByTag.filter(
-          (a) => a.id != noteId
+          (a) => a.id != noteId,
         );
       }
     })
@@ -230,13 +267,13 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
       let pinNote =
         state.pinnedNotes.find((p) => p.id == noteID) ||
         state.archivedNotes.find(
-          (n) => n.id == noteID && n.preferences[0]?.isPinned
+          (n) => n.id == noteID && n.preferences[0]?.isPinned,
         );
 
       let otherNote =
         state.listNotes.find((n) => n.id == noteID) ||
         state.archivedNotes.find(
-          (n) => n.id == noteID && !n.preferences[0]?.isPinned
+          (n) => n.id == noteID && !n.preferences[0]?.isPinned,
         );
 
       let collabNote =
@@ -251,7 +288,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
           state.pinnedNotes = state.pinnedNotes.filter((p) => p.id != noteID);
         } else {
           state.archivedNotes = state.archivedNotes.filter(
-            (note) => note.id != noteID
+            (note) => note.id != noteID,
           );
           if (pinNote.preferences[0].isPinned) {
             state.pinnedNotes.push(pinNote);
@@ -267,7 +304,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
           state.archivedNotes.unshift(otherNote);
         } else {
           state.archivedNotes = state.archivedNotes.filter(
-            (note) => note.id != noteID
+            (note) => note.id != noteID,
           );
           state.listNotes.push(otherNote);
         }
@@ -276,12 +313,12 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
 
         if (isArchived) {
           state.collabNotes = state.collabNotes.filter(
-            (c) => c.noteID != noteID
+            (c) => c.noteID != noteID,
           );
           state.archivedNotes.unshift(collabNote.note);
         } else {
           state.archivedNotes = state.archivedNotes.filter(
-            (note) => note.id != noteID
+            (note) => note.id != noteID,
           );
           state.collabNotes.push(collabNote);
         }
@@ -432,13 +469,13 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
         if (isPinned) {
           state.pinnedNotes.unshift(pinNote);
           state.listNotes = state.listNotes.filter(
-            (note) => note.id != data.note.id
+            (note) => note.id != data.note.id,
           );
         }
         if (!isPinned) {
           state.listNotes.push(pinNote);
           state.pinnedNotes = state.pinnedNotes.filter(
-            (note) => note.id != data.note.id
+            (note) => note.id != data.note.id,
           );
         }
       } else {
@@ -450,7 +487,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
           note.note.preferences[0].pinnedAt = pinnedAt;
 
           state.collabNotes = state.collabNotes.filter(
-            (n) => n.noteID !== data.note.id
+            (n) => n.noteID !== data.note.id,
           );
 
           isPinned
@@ -460,7 +497,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
 
         // ===== listNotesByTag =====
         const noteByTag = state.listNotesByTag.find(
-          (n) => n.id === data.note.id
+          (n) => n.id === data.note.id,
         );
 
         console.log("noteByTag", JSON.stringify(noteByTag, null, 2));
@@ -471,7 +508,7 @@ export const noteExtraReducers = (builder, handlePending, handleRejected) => {
           noteByTag.preferences[0].pinnedAt = pinnedAt;
 
           state.listNotesByTag = state.listNotesByTag.filter(
-            (n) => n.id !== data.note.id
+            (n) => n.id !== data.note.id,
           );
 
           isPinned

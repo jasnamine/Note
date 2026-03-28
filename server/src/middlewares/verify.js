@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 require("dotenv").config();
 
 const verifyToken = async (req, res, next) => {
@@ -84,10 +84,6 @@ const restrictNoteAccess =
       ) {
         throw new CustomError(`Requires ${requiredPermission} permission`, StatusCodes.FORBIDDEN);
       }
-
-      // req.note = note;
-      // req.isCollaborator = !!collaborator;
-      // req.collaborator = collaborator;
 
       next();
     } catch (error) {

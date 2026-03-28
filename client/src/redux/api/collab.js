@@ -95,3 +95,21 @@ export const removeCollaborator = createAsyncThunk(
     }
   }
 );
+
+export const leaveNote = createAsyncThunk(
+  "collab/leaveNote",
+  async ({ noteId }, { rejectWithValue }) => {
+    try {
+      const res = await axiosWrapper.delete(
+        `/api/v1/collaborators/leave/${noteId}`,
+      );
+      return res.data; 
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.EM ||
+          error.response?.data?.message ||
+          "Cannot leave note",
+      );
+    }
+  },
+);

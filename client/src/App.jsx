@@ -5,7 +5,6 @@ import ForgotPassword from "./pages/ForgotPassword/Forgotpassword";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
-import VerifyOTP from "./pages/ResetPassword/VerifyOTP";
 
 import DrawingCanvas from "./components/Notes/DrawingCanvas";
 import Archive from "./pages/Archive/Archive";
@@ -18,11 +17,12 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Provider, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import Notes from "./components/Notes/Notes";
+import AcceptInvitation from "./pages/AcceptInvite/AcceptInvitation";
+import NotesByTag from "./pages/NotesByTag/NotesByTag";
 import { persistor, store } from "./redux/store";
 import PrivateRoute from "./route/ProtectedRoute";
 import { getMuiTheme } from "./theme";
-import NotesByTag from "./pages/NotesByTag/NotesByTag";
-import Notes from "./components/Notes/Notes";
 
 function App() {
   const settings = useSelector((state) => state.user.userData?.settings);
@@ -51,7 +51,6 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify" element={<VerifyOTP />} />
               <Route
                 path="/google-login-success"
                 element={<LoginGoogleSuccess />}
@@ -65,6 +64,10 @@ function App() {
                 <Route path="/draw/:noteId" element={<DrawingCanvas />} />
                 <Route path="/tag/:tagName" element={<NotesByTag />} />
                 <Route path="/notes" element={<Notes />} />
+                <Route
+                  path="/accept-invitation"
+                  element={<AcceptInvitation />}
+                />
               </Route>
             </Routes>
           </Router>

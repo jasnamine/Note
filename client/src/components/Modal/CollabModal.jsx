@@ -15,6 +15,7 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import {
@@ -45,6 +46,7 @@ const CollabModal = ({ open, onClose, noteId }) => {
   const collab = useSelector((state) => state.notes?.collab);
   const user = useSelector((state) => state.user?.userData);
   const userGoogleLogin = useSelector((state) => state.auth?.googleLogin?.msg);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (open) {
@@ -74,7 +76,11 @@ const CollabModal = ({ open, onClose, noteId }) => {
 
   const onSubmit = (data) => {
     dispatch(
-      addColaborator({ noteId, email: data.email, permission: data.permission })
+      addColaborator({
+        noteId,
+        email: data.email,
+        permission: data.permission,
+      }),
     )
       .unwrap()
       .then(() => {
@@ -89,14 +95,14 @@ const CollabModal = ({ open, onClose, noteId }) => {
   const handleUpdatePermission = (
     noteId,
     collaboratorUserId,
-    newPermission
+    newPermission,
   ) => {
     dispatch(
       updateCollaboratorPermission({
         noteId,
         collaboratorUserId,
         newPermission,
-      })
+      }),
     );
   };
 
@@ -105,7 +111,7 @@ const CollabModal = ({ open, onClose, noteId }) => {
       <Box sx={style} onClick={(e) => e.stopPropagation()} id="collab-modal">
         {/* Header */}
         <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
-          Collaborators
+          {t("collabcollaborators")}
         </Typography>
         <Divider sx={{ mb: 1 }} />
 
@@ -154,7 +160,6 @@ const CollabModal = ({ open, onClose, noteId }) => {
                 justifyContent: "space-between",
               }}
             >
-              {/* Left: Avatar + Info */}
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <Avatar src={c?.avatar}>
                   {!c?.user?.avatar && getInitialsFullname(c?.fullname)}
@@ -204,13 +209,12 @@ const CollabModal = ({ open, onClose, noteId }) => {
                   "& .MuiSelect-select": { padding: 0 },
                 }}
               >
-                <MenuItem value="view">View</MenuItem>
-                <MenuItem value="edit">Edit</MenuItem>
+                <MenuItem value="view"> {t("view")}</MenuItem>
+                <MenuItem value="edit">{t("edit")}</MenuItem>
               </Select>
             </Box>
           ))}
 
-        {/* Form thêm cộng tác viên */}
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Avatar
@@ -230,7 +234,7 @@ const CollabModal = ({ open, onClose, noteId }) => {
               control={control}
               errors={errors}
               required
-              placeholder="Person or email to share with"
+              placeholder={t("email to share with")}
               custom
             />
 
@@ -265,8 +269,8 @@ const CollabModal = ({ open, onClose, noteId }) => {
                       },
                     }}
                   >
-                    <MenuItem value="view">View</MenuItem>
-                    <MenuItem value="edit">Edit</MenuItem>
+                    <MenuItem value="view"> {t("view")}</MenuItem>
+                    <MenuItem value="edit">{t("edit")}</MenuItem>
                   </Select>
                 )}
               />
@@ -288,7 +292,6 @@ const CollabModal = ({ open, onClose, noteId }) => {
             </Alert>
           )}
 
-          {/* Buttons */}
           <Box sx={{ display: "block", float: "right", mt: 3 }}>
             <Button
               variant="outlined"

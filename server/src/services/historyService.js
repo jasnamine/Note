@@ -1,6 +1,6 @@
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const getNoteHistory = async (userId, noteId) => {
   try {
@@ -27,7 +27,6 @@ const getNoteHistory = async (userId, noteId) => {
       throw new CustomError("Note not found or deleted", StatusCodes.BAD_REQUEST);
     }
 
-    // Kiểm tra quyền truy cập
     const isOwner = note.userID == userId;
 
     const isCollaborator = note.collaborators.some(
@@ -38,7 +37,6 @@ const getNoteHistory = async (userId, noteId) => {
       throw new CustomError("Unauthorized to view note history", StatusCodes.FORBIDDEN);
     }
 
-    // Lấy lịch sử chỉnh sửa
     const history = await db.NoteHistory.findAll({
       where: { noteID: noteId },
       attributes: [

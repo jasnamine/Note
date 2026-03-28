@@ -1,6 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-import noteService from "../services/noteService";
 const CustomError = require("../ultities/CustomError");
+const { StatusCodes } = require("http-status-codes");
+const noteService = require("../services/noteService");
+
 const addNote = async (req, res, next) => {
   try {
     const { title, content, color, theme, checklistItems } = req.body;
@@ -10,14 +11,14 @@ const addNote = async (req, res, next) => {
     if (files.length > 15) {
       throw new CustomError(
         "Exceed maximum 15 images per note",
-        StatusCodes.BAD_REQUEST
+        StatusCodes.BAD_REQUEST,
       );
     }
 
     const response = await noteService.addNote(
       { title, content, color, theme, checklistItems },
       userId,
-      files
+      files,
     );
 
     return res.status(StatusCodes.OK).json(response);
@@ -35,7 +36,7 @@ const editNote = async (req, res, next) => {
     const response = await noteService.editNote(
       { title, content, checklistItems },
       noteId,
-      userId
+      userId,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -101,7 +102,7 @@ const softDelete = async (req, res, next) => {
     let noteId = req.params.noteId;
     let userId = req.user.id;
     const response = await noteService.softDelete(noteId, userId);
-   return res.status(StatusCodes.OK).json(response);
+    return res.status(StatusCodes.OK).json(response);
   } catch (error) {
     next(error);
   }
@@ -175,7 +176,7 @@ const settingNote = async (req, res, next) => {
       userId,
       noteId,
       color,
-      theme
+      theme,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

@@ -1,8 +1,8 @@
 const db = require("../models");
 const { Op, col } = require("sequelize");
-import { StatusCodes } from "http-status-codes";
-
+const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../ultities/CustomError");
+
 const addNote = async (noteData, userId, files) => {
   try {
     const { title, content, color, theme, checklistItems } = noteData;
@@ -21,7 +21,6 @@ const addNote = async (noteData, userId, files) => {
       isArchived: false,
     });
 
-    // Tạo checklist nếu user thêm
     if (Array.isArray(checklistItems) && checklistItems.length > 0) {
       const checklistData = checklistItems.map((item) => ({
         noteID: createdNote.id,
@@ -31,7 +30,6 @@ const addNote = async (noteData, userId, files) => {
       await db.Checklist.bulkCreate(checklistData);
     }
 
-    // Tạo image nếu user thêm
     if (files.length > 0) {
       const noteImages = files.map((file) => ({
         noteID: createdNote.id,
@@ -455,12 +453,10 @@ const getNoteById = async (userId, noteId) => {
       ],
     });
 
-    // Kiểm tra ghi chú tồn tại
     if (!note) {
       throw new CustomError("Note not found or deleted", StatusCodes.NOT_FOUND);
     }
 
-    // Kiểm tra quyền truy cập
     const isOwner = note.userID === userId;
     const isCollaborator = note.collaborators?.length > 0;
     if (!isOwner && !isCollaborator) {
@@ -482,28 +478,38 @@ const getNoteById = async (userId, noteId) => {
 
 const softDelete = async (noteId, userId) => {
   try {
-    // Tìm ghi chú
     const note = await db.Note.findOne({
       where: { id: noteId, deletedAt: null },
     });
 
-    // Kiểm tra ghi chú tồn tại
     if (!note) {
       throw new CustomError(
         "Note not found or already deleted",
-        StatusCodes.NOT_FOUND
+        StatusCodes.NOT_FOUND,
       );
     }
 
-    // Kiểm tra quyền: Chỉ chính chủ
     if (note.userID !== userId) {
       throw new CustomError(
         "Unauthorized to delete note",
-        StatusCodes.FORBIDDEN
+        StatusCodes.FORBIDDEN,
       );
     }
 
-    // Xóa mềm
+    await Promise.all([
+      db.NoteCollaborator.destroy({ where: { noteID: noteId } }),
+
+      db.Reminder.destroy({ where: { noteID: noteId } }),
+
+      db.NotePreference.destroy({
+        where: {
+          noteID: noteId,
+          userID: { [db.Sequelize.Op.ne]: userId }, 
+        },
+      }),
+
+    ]);
+
     await note.destroy();
 
     return {
@@ -608,18 +614,15 @@ const restoreNote = async (noteId, userId) => {
 
 const deleteNote = async (noteId, userId) => {
   try {
-    // Tìm ghi chú (bao gồm đã xóa mềm)
     const note = await db.Note.findOne({
       where: { id: noteId },
       paranoid: false,
     });
 
-    // Kiểm tra ghi chú tồn tại
     if (!note) {
       throw new CustomError("Note not found", StatusCodes.NOT_FOUND);
     }
 
-    // Kiểm tra quyền: Chỉ chính chủ
     if (note.userID !== userId) {
       throw new CustomError(
         "Unauthorized to delete note",
@@ -702,13 +705,21 @@ const searchNotes = async (userId, { keyword }) => {
   try {
     const notes = await db.Note.findAll({
       where: {
-        userID: userId,
-        [Op.or]: [
-          { title: { [Op.like]: `%${keyword}%` } },
-          { content: { [Op.like]: `%${keyword}%` } },
-          db.Sequelize.where(db.Sequelize.col("tags.name"), {
-            [Op.like]: `%${keyword}%`,
-          }),
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { userID: userId },
+              { "$collaborator.id$": userId },
+            ],
+          },
+          {
+            [Op.or]: [
+              { title: { [Op.like]: `%${keyword}%` } },
+              { content: { [Op.like]: `%${keyword}%` } },
+              { "$tags.name$": { [Op.like]: `%${keyword}%` } },
+            ],
+          },
+          { deletedAt: null },
         ],
       },
       include: [
@@ -718,12 +729,21 @@ const searchNotes = async (userId, { keyword }) => {
           through: { attributes: [] },
           required: false,
         },
+        {
+          model: db.User,
+          as: "collaborator", 
+          attributes: ["id", "username", "avatar"],
+          through: { attributes: ["permission"] },
+          required: false,
+        },
       ],
+      subQuery: false,
+      distinct: true,
     });
 
     return {
-      statusCode: StatusCodes.OK,
-      message: "Notes search by keyword successfully",
+      statusCode: 200,
+      message: "Search completed",
       DT: notes,
     };
   } catch (error) {

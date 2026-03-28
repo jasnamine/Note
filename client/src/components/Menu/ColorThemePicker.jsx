@@ -16,7 +16,6 @@ const ColorThemePicker = ({
   const open = Boolean(anchorEl);
   const setting = useSelector((state) => state.user?.userData?.settings);
 
-
   return (
     <Menu
       anchorEl={anchorEl}
@@ -25,7 +24,6 @@ const ColorThemePicker = ({
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       transformOrigin={{ vertical: "top", horizontal: "left" }}
     >
-      {/* Colors */}
       <Box sx={{ display: "flex", flexWrap: "wrap", px: 1 }}>
         {colors.map((item, index) => (
           <Tooltip title={item.name} key={index}>
@@ -71,7 +69,6 @@ const ColorThemePicker = ({
       <Box sx={{ height: 10 }} />
       <Divider />
 
-      {/* Themes */}
       <Box sx={{ display: "flex", flexWrap: "wrap", px: 1, pt: 1 }}>
         {themes.map((item, index) => (
           <Tooltip title={item.name} key={index}>

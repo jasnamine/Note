@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "noteID",
         as: "collaborators",
       });
+      Note.belongsToMany(models.User, {
+        through: models.NoteCollaborator,
+        foreignKey: "noteID",
+        as: "collaborator",
+      });
       Note.hasMany(models.NotePreference, {
         foreignKey: "noteID",
         as: "preferences",

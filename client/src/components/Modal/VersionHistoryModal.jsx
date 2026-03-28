@@ -11,44 +11,7 @@ import { Box, Chip, IconButton, Modal, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getHistoryNote } from "../../redux/api/historyNote";
-
-const versionData = [
-  {
-    version: "v6.0",
-    title: "Added two new lessons",
-    author: "Dakshi Khatri",
-    time: "1 hour ago",
-    highlight: true,
-  },
-  {
-    version: "v5.0",
-    title:
-      "New images added to Lesson 2. Quiz and Survey added to Lesson 3,4,5 & 6",
-    author: "Mukul Joshi",
-    time: "14 hours ago",
-  },
-  {
-    version: "v4.0",
-    title: "New images added to Lesson 2",
-    author: "Shuchit Gandhi",
-    time: "Yesterday",
-  },
-  {
-    title: "Updated new quiz questions",
-    author: "Suhani Ashok",
-    time: "3 days ago",
-  },
-  {
-    title: "Lesson 10 updated",
-    author: "Suhani Ashok",
-    time: "5 days ago",
-  },
-  {
-    title: "Updated examples in introduction",
-    author: "Sarvesh Pansare",
-    time: "3 Mar, 2022",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function VersionHistoryModal({
   openHistoryModal,
@@ -57,6 +20,7 @@ export default function VersionHistoryModal({
 }) {
   const dispatch = useDispatch();
   const historyData = useSelector((state) => state.history.historyNote);
+  const {t} = useTranslation()
   useEffect(() => {
     if (openHistoryModal) {
       dispatch(getHistoryNote({noteId}));
@@ -64,7 +28,6 @@ export default function VersionHistoryModal({
   }, [openHistoryModal]);
   return (
     <Box>
-      {/* Modal */}
       <Modal open={openHistoryModal} onClose={onClose}>
         <Box
           sx={{
@@ -81,7 +44,6 @@ export default function VersionHistoryModal({
             overflowY: "auto",
           }}
         >
-          {/* Header */}
           <Box
             sx={{
               display: "flex",
@@ -91,14 +53,13 @@ export default function VersionHistoryModal({
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              Version History
+              {t("version history")}
             </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Box>
 
-          {/* Timeline */}
           <Timeline
             position="right"
             sx={{
@@ -118,21 +79,14 @@ export default function VersionHistoryModal({
                     sx={{
                       mt: 1,
                       mb: 0.5,
-                      // backgroundColor: item.highlight ? "black" : "grey.200",
-                      // color: item.highlight ? "white" : "black",
-                      fontWeight: "bold",
-                      "& .MuiChip-icon": {
-                        // color: item.highlight ? "white" : "black",
-                      },
                     }}
                   />
 
                   {idx < historyData.length - 1 && <TimelineConnector />}
                 </TimelineSeparator>
-
                 <TimelineContent sx={{ pb: 3 }}>
                   <Typography variant="body1" fontWeight="500">
-                    Updated {item.title}
+                    {t("updated")} {item.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {item.modifier.username} • {item.modifiedAt}

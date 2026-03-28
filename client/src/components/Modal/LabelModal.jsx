@@ -96,18 +96,18 @@ const LabelModal = ({ open, handleClose }) => {
     <>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <IconButton onClick={handleClose}>
               <CloseIcon fontSize="small" />
             </IconButton>
-            <Typography sx={{ ml: 1, fontWeight: 500 }}>{t("edit label")}</Typography>
+            <Typography sx={{ ml: 1, fontWeight: 500 }}>
+              {t("edit label")}
+            </Typography>
           </Box>
 
-          {/* Create new label */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
             <TextField
-              placeholder="Create new tag"
+              placeholder={t("create_placeholder")}
               variant="standard"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
@@ -125,7 +125,6 @@ const LabelModal = ({ open, handleClose }) => {
             </IconButton>
           </Box>
 
-          {/* Existing labels */}
           <List dense>
             {tags.map((tag) => (
               <ListItem
@@ -172,10 +171,9 @@ const LabelModal = ({ open, handleClose }) => {
 
           <Divider sx={{ my: 1 }} />
 
-          {/* Done Button */}
           <Box sx={{ textAlign: "right" }}>
             <Button onClick={handleClose} size="small">
-              Done
+              {t("done")}
             </Button>
           </Box>
         </Box>
@@ -186,25 +184,27 @@ const LabelModal = ({ open, handleClose }) => {
         maxWidth="xs"
         fullWidth
       >
-        <DialogTitle>Xóa nhãn?</DialogTitle>
+        <DialogTitle>{t("dialog.delete_label_title")}</DialogTitle>
 
         <DialogContent>
           <DialogContentText>
-            Nhãn <b>"{tagToDelete?.name}"</b> sẽ bị xóa khỏi tất cả ghi chú đã
-            gán.
+            {/* Truyền biến tagToDelete?.name vào i18n */}
+            {t("dialog.delete_label_content", { name: tagToDelete?.name })}
             <br />
-            Hành động này không thể hoàn tác.
+            {t("dialog.undone_warning")}
           </DialogContentText>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenConfirm(false)}>Hủy</Button>
+          <Button onClick={() => setOpenConfirm(false)}>
+            {t("dialog.button.cancel")}
+          </Button>
           <Button
             color="error"
             variant="contained"
             onClick={handleConfirmDelete}
           >
-            Xóa
+            {t("dialog.button.delete")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -19,13 +19,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getTags } from "../../../redux/api/tag";
 import LabelModal from "../../Modal/LabelModal";
 
-
 const Sidebar = ({ open, handleDrawerToggle }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
 
   const tags = useSelector((state) => state?.tag?.listTags ?? []);
   useEffect(() => {
@@ -70,7 +68,6 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
           </ListItemButton>
         </ListItem>
 
-        {/* Tags - shown under Labels */}
         {tags?.map((tag) => (
           <ListItem key={tag?.id} disablePadding>
             <ListItemButton onClick={() => navigate(`/tag/${tag.name}`)}>
@@ -82,7 +79,6 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
           </ListItem>
         ))}
 
-        {/* Archive */}
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => navigate("/archive")}
@@ -118,7 +114,6 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
         </ListItem>
       </List>
 
-      {/* Modal for editing labels */}
       <LabelModal open={openModal} handleClose={() => setOpenModal(false)} />
     </Box>
   );

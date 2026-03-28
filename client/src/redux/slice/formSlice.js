@@ -16,7 +16,7 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setFormData: (state, action) => {
-      return { ...state, ...action.payload }; // merge data
+      return { ...state, ...action.payload };
     },
     addImage: (state, action) => {
       state.images.push(action.payload);

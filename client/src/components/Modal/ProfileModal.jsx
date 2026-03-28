@@ -26,7 +26,7 @@ const ProfileModal = ({ open, onClose }) => {
   const [fileInputState, setFileInputState] = useState("");
   const [previewSource, setPreviewSource] = useState("");
   const [selectedFile, setSelectedFile] = useState();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     previewFile(file);
@@ -61,7 +61,6 @@ const ProfileModal = ({ open, onClose }) => {
     resolver: yupResolver(schema),
   });
 
-  // Cập nhật form khi user thay đổi
   useEffect(() => {
     if (user) {
       reset({
@@ -79,7 +78,6 @@ const ProfileModal = ({ open, onClose }) => {
     setFileInputState("");
   }, [onClose]);
 
-  // Gọi API khi mở modal
   useEffect(() => {
     if (open) {
       dispatch(getUser());

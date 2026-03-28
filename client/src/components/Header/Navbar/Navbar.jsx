@@ -2,7 +2,6 @@ import { AppBar, Box, Toolbar } from "@mui/material";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import NotificationMenu from "../../Menu/NotificationMenu";
 import ProfileMenu from "../../Menu/ProfileMenu";
 import ProfileModal from "../../Modal/ProfileModal";
 import SettingModal from "../../Modal/SettingModal";
@@ -24,11 +23,6 @@ function Navbar({ handleDrawerToggle }) {
     openProfile: false,
     openSetting: false,
   });
-
-  const handleOpenNotify = (e) =>
-    setUiState((prev) => ({ ...prev, anchorNotify: e.currentTarget }));
-  const handleCloseNotify = () =>
-    setUiState((prev) => ({ ...prev, anchorNotify: null }));
 
   const handleOpenUserMenu = (e) =>
     setUiState((prev) => ({ ...prev, anchorElUser: e.currentTarget }));
@@ -52,27 +46,17 @@ function Navbar({ handleDrawerToggle }) {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Left: Menu + Logo */}
+
         <LogoSection
           pathName={pathName}
           handleDrawerToggle={handleDrawerToggle}
         />
 
-        {/* Center: SearchBar */}
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
           <SearchBar />
         </Box>
 
-        {/* Right: Notifications + Avatar */}
         <Box>
-          {/* Notifications */}
-          <NotificationMenu
-            anchorEl={uiState.anchorNotify}
-            onOpen={handleOpenNotify}
-            onClose={handleCloseNotify}
-          />
-
-          {/* User Menu */}
           <ProfileMenu
             anchorElUser={uiState.anchorElUser}
             handleOpenUserMenu={handleOpenUserMenu}
@@ -82,8 +66,14 @@ function Navbar({ handleDrawerToggle }) {
           />
         </Box>
       </Toolbar>
-      <ProfileModal open={uiState.openProfile} onClose={() => setOpenProfile(false)} />
-      <SettingModal open={uiState.openSetting} onClose={() => setOpenSetting(false)} />
+      <ProfileModal
+        open={uiState.openProfile}
+        onClose={() => setOpenProfile(false)}
+      />
+      <SettingModal
+        open={uiState.openSetting}
+        onClose={() => setOpenSetting(false)}
+      />
     </AppBar>
   );
 }

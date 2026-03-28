@@ -1,5 +1,5 @@
-import { StatusCodes } from "http-status-codes";
-import checklistService from "../services/checklistService";
+const { StatusCodes } = require("http-status-codes");
+const checklistService = require("../services/checklistService");
 
 const addChecklistItem = async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ const updateChecklistItem = async (req, res, next) => {
     const response = await checklistService.updateChecklistItem(
       userId,
       { noteId, checklistId },
-      { title, isDone, order }
+      { title, isDone, order },
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

@@ -51,6 +51,7 @@ function Note({
   const [openImageModal, setOpenImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+
   const handleImageClick = useCallback((image) => {
     setSelectedImage(image);
     setOpenImageModal(true);
@@ -290,7 +291,6 @@ function Note({
           )}
 
           <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
-            {/* Items chưa hoàn thành */}
             {checklists
               ?.filter((item) => !item.isDone)
               .map((item) => (
@@ -302,7 +302,6 @@ function Note({
                 </Box>
               ))}
 
-            {/* Items đã hoàn thành */}
             {checklists?.filter((item) => item.isDone).length > 0 && (
               <>
                 <Typography
@@ -396,9 +395,6 @@ function Note({
           ))}
         </div>
 
-        {permission === "view" ? (
-          ""
-        ) : (
           <ButtonIcon
             noteId={noteId}
             isNewNote={false}
@@ -406,8 +402,7 @@ function Note({
             note={note}
             permission={permission}
           />
-        )}
-
+   
         <ReminderModal
           open={openReminderModal}
           onClose={() => {

@@ -7,7 +7,6 @@ import { setAccessToken, setOnTokenRefreshed } from "./redux/api/axiosWrapper";
 import { updateAccessToken } from "./redux/slice/authSlice";
 import { persistor, store } from "./redux/store";
 
-// Lấy token từ Redux Persist
 const currentToken = store.getState()?.auth?.login?.token;
 if (currentToken) {
   setAccessToken(currentToken);

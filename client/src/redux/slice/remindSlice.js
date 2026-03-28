@@ -14,7 +14,6 @@ const remindSlice = createSlice({
   initialState,
   reducers: {},
 
-  // register
   extraReducers: (builder) => {
     builder
       // get reminders

@@ -11,8 +11,6 @@
   "my account": "Tài khoản cá nhân",
   "profile": "Hồ sơ",
   "logout": "Đăng xuất",
-  "notifications": "Thông báo",
-  "empty notifications": "Không có thông báo",
   "username": "Tên đăng nhập",
   "fullname": "Tên tài khoản",
   "change avt": "Thay ảnh",
@@ -32,6 +30,9 @@
   "reset": "Đặt lại",
 
   "add label": "Thêm nhãn",
+  "edit_title": "Chỉnh sửa nhãn",
+  "create_placeholder": "Tạo nhãn mới",
+  "done": "Xong",
   "add drawing": "Thêm bản vẽ",
   "add checkboxes": "Thêm danh sách",
   "image": "Hình ảnh",
@@ -64,6 +65,33 @@
   "invited you to collaborate on": "đã mời bạn cộng tác trên",
   "accept": "Chấp nhận",
   "delete": "Xóa",
-  "notes you add appear here": "Ghi chú bạn thêm sẽ xuất hiện ở đây"
+  "notes you add appear here": "Ghi chú bạn thêm sẽ xuất hiện ở đây",
+  "collabcollaborators": "Cộng tác viên",
+  "leave note": "Rời note",
+  "dialog": {
+    "delete_label_title": "Xóa nhãn?",
+    "delete_label_content": "Nhãn \"{{name}}\" sẽ bị xóa khỏi tất cả ghi chú đã gán.",
+    "undone_warning": "Hành động này không thể hoàn tác.",
+    "button": {
+      "cancel": "Hủy",
+      "delete": "Xóa"
+    }
+  },
 
+  "invitation": {
+    "processing": "Đang xác thực lời mời...",
+    "wait_moment": "Vui lòng đợi trong giây lát.",
+    "joined_title": "Chấp nhận thành công!",
+    "redirecting": "Hệ thống đang chuyển hướng bạn đến ghi chú...",
+    "error_title": "Lời mời không hợp lệ",
+    "error_desc": "Liên kết có thể đã hết hạn hoặc bạn không có quyền truy cập.",
+    "back_home": "Về trang chủ",
+    "success": "Bạn đã tham gia cộng tác thành công!",
+    "failed": "Xử lý lời mời thất bại.",
+    "invalid_token": "Mã xác thực không hợp lệ."
+  },
+  "email to share with": "Chia sẻ với người dùng khác qua email",
+  "edit": "Sửa",
+  "view": "Xem",
+  "updated": "Đã chỉnh sửa"
 }

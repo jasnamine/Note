@@ -1,5 +1,6 @@
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 const imageNoteService = require("../services/imageNoteService");
+
 const uploadImageNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
@@ -8,7 +9,7 @@ const uploadImageNote = async (req, res, next) => {
     const response = await imageNoteService.uploadImageNote(
       files,
       noteId,
-      userId
+      userId,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
@@ -25,7 +26,7 @@ const deleteImageNote = async (req, res, next) => {
     const response = await imageNoteService.deleteImageNote(
       imageUrl,
       noteId,
-      userId
+      userId,
     );
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

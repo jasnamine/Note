@@ -1,5 +1,5 @@
 const userService = require("../services/userService");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const getUser = async (req, res, next) => {
   try {

@@ -4,14 +4,12 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class NotePreference extends Model {
     static associate(models) {
-      // Một NotePreference thuộc về 1 Note
       NotePreference.belongsTo(models.Note, {
         foreignKey: "noteID",
         as: "note",
         onDelete: "CASCADE",
       });
 
-      // Một NotePreference thuộc về 1 User
       NotePreference.belongsTo(models.User, {
         foreignKey: "userID",
         as: "user",

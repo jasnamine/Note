@@ -56,6 +56,14 @@ router.get(
   noteController.getArchivedNotes
 );
 
+// Tìm kiếm note
+router.get(
+  "/search",
+  verifyToken,
+  validate(searchNotesSchema),
+  noteController.searchNotes
+);
+
 // Thêm note
 router.post(
   "/",
@@ -68,13 +76,7 @@ router.post(
 // Lấy danh sách note theo tag
 router.get("/:tagId", verifyToken, validate(getNotesByTagSchema), noteController.getNotesByTag);
 
-// Tìm kiếm note
-router.get(
-  "/search",
-  verifyToken,
-  validate(searchNotesSchema),
-  noteController.searchNotes
-);
+
 
 // Chỉnh sửa note
 router.patch(

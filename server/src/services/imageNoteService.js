@@ -1,8 +1,7 @@
 const db = require("../models");
 const { getPublicIdFromUrl } = require("../ultities/cloudinary");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
-
+const { StatusCodes } = require("http-status-codes");
 const { cloudinary } = require("../config/cloudinary");
 
 const uploadImageNote = async (files, noteId, userId) => {

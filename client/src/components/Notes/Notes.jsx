@@ -13,7 +13,7 @@ import {
   getNotesByTag,
   getPinnedNotes,
 } from "../../redux/api/note";
-import { getNotifications } from "../../redux/api/notify";
+
 import CategoryTitle from "../Typography/CategoryTitle";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +26,6 @@ function Notes({ typeNote, tagCategory }) {
   useEffect(() => {
     if (user?.token && user?.success) {
       setAccessToken(user?.token);
-      dispatch(getNotifications());
       dispatch(getPinnedNotes());
       dispatch(getCollabNotes());
       if (typeNote === "listNotes") {

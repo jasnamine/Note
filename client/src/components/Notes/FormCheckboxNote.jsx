@@ -130,7 +130,7 @@ function FormCheckboxNote({ control, note, permission }) {
                           color: "rgb(32,33,36)",
                         },
                         "&.Mui-disabled.Mui-checked": {
-                          color: "rgb(32,33,36)", // giữ nguyên màu khi disabled
+                          color: "rgb(32,33,36)",
                         },
                       }}
                       disabled={isReadOnly}

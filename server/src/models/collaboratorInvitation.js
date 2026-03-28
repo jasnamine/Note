@@ -50,6 +50,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("view", "edit"),
         allowNull: false,
       },
+      token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       expiresAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -73,8 +78,8 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "CollaboratorInvitation",
       tableName: "collaboratorInvitations",
       timestamps: true,
-      paranoid: false, 
-    }
+      paranoid: false,
+    },
   );
   return CollaboratorInvitation;
 };

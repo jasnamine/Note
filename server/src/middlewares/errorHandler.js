@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const errorHandler = (err, req, res, next) => {
   let message = err.message || "INTERNAL_SERVER_ERROR";

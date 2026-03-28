@@ -1,6 +1,5 @@
 const noteTagService = require("../services/noteTagService");
-
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const addTagToNote = async (req, res, next) => {
   try {

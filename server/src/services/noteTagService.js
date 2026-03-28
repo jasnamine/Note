@@ -1,6 +1,6 @@
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const addTagToNote = async ({ noteId, tagId }) => {
   try {
@@ -105,7 +105,7 @@ const addMultipleTags = async ({ noteId, tagIDs }) => {
 
 const getTagsOfNote = async (noteId) => {
   try {
-    // Kiểm tra note tồn tại
+  
     const existingNote = await db.Note.findOne({
       where: { id: noteId },
     });
@@ -142,13 +142,11 @@ const getTagsOfNote = async (noteId) => {
 
 const removeTagFromNote = async ({ noteId, tagIDs }) => {
   try {
-    // Kiểm tra note tồn tại
     const existingNote = await db.Note.findOne({ where: { id: noteId } });
     if (!existingNote) {
       throw new CustomError("Note not found", 404, 1);
     }
 
-    // Kiểm tra các tag tồn tại
     const existingTags = await db.Tag.findAll({
       where: { id: tagIDs },
       attributes: ["id"],
@@ -165,7 +163,6 @@ const removeTagFromNote = async ({ noteId, tagIDs }) => {
       );
     }
 
-    // Xóa các NoteTags
     await db.NoteTag.destroy({
       where: {
         noteID: noteId,
@@ -184,13 +181,11 @@ const removeTagFromNote = async ({ noteId, tagIDs }) => {
 
 const removeTagNote = async ({ noteId, tagId }) => {
   try {
-    // Kiểm tra note tồn tại
     const existingNote = await db.Note.findOne({ where: { id: noteId } });
     if (!existingNote) {
       throw new CustomError("Note not found", StatusCodes.NOT_FOUND);
     }
 
-    // Kiểm tra các tag tồn tại
     const existingTags = await db.Tag.findOne({
       where: { id: tagId },
       attributes: ["id"],
@@ -200,7 +195,6 @@ const removeTagNote = async ({ noteId, tagId }) => {
       throw new CustomError("The following tag ID do not exist", StatusCodes.NOT_FOUND);
     }
 
-    // Xóa các NoteTags
     await db.NoteTag.destroy({
       where: {
         noteID: noteId,

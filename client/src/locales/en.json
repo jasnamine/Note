@@ -11,7 +11,7 @@
   "my account": "My account",
   "profile": "Profile",
   "logout": "Logout",
-  "empty notifications": "No new notifications",
+
   "username": "username",
   "fullname": "fullname",
   "change avt": "Change avatar",
@@ -19,6 +19,10 @@
   "notes": "Notes",
   "edit label": "Edit labels",
   "labels": "Labels",
+  "edit_title": "Edit labels",
+  "create_placeholder": "Create new label",
+  "done": "Done",
+
   "archive": "Archive",
   "trash": "Trash",
   "reminder": "Reminders",
@@ -57,11 +61,26 @@
   "does not repeat": "Does not repeat",
   "daily": "Daily",
   "weekly": "Weekly",
-  "monthly": "Monthly" ,
+  "monthly": "Monthly",
   "has accepted your invitation": "has accepted your invitation",
   "invited you to collaborate on": "invited you to collaborate on",
   "accept": "Accept",
   "delete": "Delete",
-  "notes you add appear here": "Notes you add appear here"
-  
+  "notes you add appear here": "Notes you add appear here",
+
+  "collaborators": "Collaborators",
+  "leave note": "Leave note",
+  "dialog": {
+    "delete_label_title": "Delete label?",
+    "delete_label_content": "The label \"{{name}}\" will be removed from all assigned notes.",
+    "undone_warning": "This action cannot be undone.",
+    "button": {
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "email to share with": "Email to share with",
+  "edit": "Edit",
+  "view": "View",
+  "updated": "Updated"
 }

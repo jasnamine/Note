@@ -14,7 +14,6 @@ const historySlice = createSlice({
   initialState,
   reducers: {},
 
-  // register
   extraReducers: (builder) => {
     // get historyNote
     builder

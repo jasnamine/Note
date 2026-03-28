@@ -23,15 +23,8 @@ const addCollaboratorInvitationSchema = {
 };
 
 const acceptCollaboratorInvitationSchema = {
-  params: Joi.object({
-    invitationId: Joi.number().required(),
-  }),
-  body: Joi.object({
-    status: Joi.string().valid("accepted").required(),
-    inviterId: Joi.number().required(),
-  }),
-  user: Joi.object({
-    id: Joi.number().required(),
+  query: Joi.object({
+    token: Joi.string().required(),
   }),
 };
 
@@ -58,7 +51,7 @@ const updateCollaboratorPermissionSchema = {
 
 const leaveNoteSchema = {
   params: Joi.object({
-    invitationId: Joi.number().required(),
+    noteId: Joi.number().required(),
   }),
   user: Joi.object({
     id: Joi.number().required(),

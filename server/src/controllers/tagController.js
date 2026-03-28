@@ -1,5 +1,5 @@
 const tagService = require("../services/tagService");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const getTags = async (req, res, next) => {
   try {

@@ -2,25 +2,24 @@ const express = require("express");
 const collaboratorController = require("../controllers/collaboratorController");
 const validate = require("../middlewares/validate");
 const { verifyToken, restrictNoteAccess } = require("../middlewares/verify");
-import {
+const {
   acceptCollaboratorInvitationSchema,
   addCollaboratorInvitationSchema,
   leaveNoteSchema,
   removeCollaboratorSchema,
   updateCollaboratorPermissionSchema,
-} from "../validations/collaboratorValidation";
+} = require("../validations/collaboratorValidation");
 const router = express.Router();
 
+// Chấp nhận lời mời cộng tác
+router.get(
+  "/accept",
+  validate(acceptCollaboratorInvitationSchema),
+  collaboratorController.acceptCollaboratorInvitation,
+);
 // Lấy danh sách cộng tác viên
 router.get("/:noteId", verifyToken, collaboratorController.getCollaborators);
 
-// Chấp nhận lời mời cộng tác
-router.post(
-  "/accept/:invitationId",
-  verifyToken,
-  validate(acceptCollaboratorInvitationSchema),
-  collaboratorController.acceptCollaboratorInvitation
-);
 
 // Thêm cộng tác viên
 router.post(
@@ -28,7 +27,7 @@ router.post(
   verifyToken,
   restrictNoteAccess({ allowOwner: true, allowCollaborator: false }),
   validate(addCollaboratorInvitationSchema),
-  collaboratorController.addCollaboratorInvitation
+  collaboratorController.addCollaboratorInvitation,
 );
 
 // Xóa cộng tác viên
@@ -37,7 +36,7 @@ router.delete(
   verifyToken,
   restrictNoteAccess({ allowOwner: true, allowCollaborator: false }),
   validate(removeCollaboratorSchema),
-  collaboratorController.removeCollaborator
+  collaboratorController.removeCollaborator,
 );
 
 // Rời khỏi note đã tham gia
@@ -46,7 +45,7 @@ router.delete(
   verifyToken,
   restrictNoteAccess({ allowOwner: false, allowCollaborator: true }),
   validate(leaveNoteSchema),
-  collaboratorController.leaveNote
+  collaboratorController.leaveNote,
 );
 
 // Thay đổi quyền của collaborator
@@ -55,7 +54,7 @@ router.patch(
   verifyToken,
   restrictNoteAccess({ allowOwner: true, allowCollaborator: false }),
   validate(updateCollaboratorPermissionSchema),
-  collaboratorController.updateCollaboratorPermission
+  collaboratorController.updateCollaboratorPermission,
 );
 
 module.exports = router;

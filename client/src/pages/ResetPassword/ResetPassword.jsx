@@ -3,26 +3,23 @@ import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import * as yup from "yup";
 import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import InputField from "../../components/Input/InputField";
 import { resetPassword } from "../../redux/api/auth";
 import { pawdRegExp } from "../../utils/regex";
-import { useSearchParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { error, success, loading, msg } = useSelector(
-    (state) => state.auth.resetPassword
+    (state) => state.auth.resetPassword,
   );
 
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-
-  
 
   const schema = yup.object({
     newPassword: yup
@@ -30,7 +27,7 @@ const ResetPassword = () => {
       .required("Password is required")
       .matches(
         pawdRegExp,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character",
       ),
     confirmPassword: yup
       .string()
@@ -51,12 +48,11 @@ const ResetPassword = () => {
   });
 
   const onSubmit = (data) => {
-    if (!token) return; // Nếu không có token, không làm gì
+    if (!token) return;
 
     const { confirmPassword, ...rest } = data;
     dispatch(resetPassword({ token, newPassword: rest.newPassword }));
   };
-
 
   useEffect(() => {
     if (success) {

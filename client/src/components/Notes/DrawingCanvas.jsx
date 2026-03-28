@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import { uploadImageNote } from "../../redux/api/imageNote";
-// import { addDrawing } from "../../redux/slice/drawingSlice";
 import { addImage } from "../../redux/slice/formSlice";
 
 function DrawingCanvas() {
@@ -28,7 +27,6 @@ function DrawingCanvas() {
     const file = new File([blob], "drawing.png", { type: "image/png" });
     const preview = URL.createObjectURL(file);
     if (!noteId || noteId === "null" || noteId === "undefined") {
-      // dispatch(addDrawing({ file, preview }));
       dispatch(addImage({ file, preview }));
       navigate("/");
     } else {
@@ -57,7 +55,6 @@ function DrawingCanvas() {
         flexDirection: "column",
       }}
     >
-      {/* Canvas */}
       <ReactSketchCanvas
         ref={canvasRef}
         strokeColor={strokeColor}
@@ -67,7 +64,6 @@ function DrawingCanvas() {
         style={{ border: "1px solid #ddd", borderRadius: 4 }}
       />
 
-      {/* Tools */}
       <Stack direction="row" spacing={2} alignItems="center" mt={2}>
         <Tooltip title="Color">
           <input

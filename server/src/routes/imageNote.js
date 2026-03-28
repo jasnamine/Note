@@ -3,7 +3,6 @@ const express = require("express");
 const { verifyToken, restrictNoteAccess } = require("../middlewares/verify");
 const uploadNoteImage = require("../middlewares/uploadNoteImage");
 const imageNoteController = require("../controllers/imageNoteController")
-
 const router = express.Router();
 
 // Upload ảnh cho 1 note

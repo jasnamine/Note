@@ -182,7 +182,6 @@ function ModalNote({ open, handleClose, note, permission }) {
           )}
         />
 
-        {/* Checklist */}
         {(showChecklist || note?.checklists?.length > 0) && (
           <FormCheckboxNote
             control={control}

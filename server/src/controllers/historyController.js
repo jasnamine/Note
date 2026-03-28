@@ -1,6 +1,5 @@
-import historyService from "../services/historyService";
-
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
+const historyService = require("../services/historyService");
 
 const getNoteHistory = async (req, res, next) => {
   try {

@@ -1,6 +1,6 @@
 const db = require("../models");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const addChecklistItem = async (userId, noteId, itemData) => {
   try {
@@ -68,7 +68,6 @@ const updateChecklistItem = async (
       { where: { id: checklistId } }
     );
 
-    // Lấy checklist sau cập nhật
     const updatedChecklist = await db.Checklist.findOne({
       where: { id: checklistId },
     });

@@ -14,7 +14,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {},
 
-  // register
   extraReducers: (builder) => {
     // get user
     builder

@@ -9,7 +9,6 @@ const remindRouter = require("./remind");
 const tagRouter = require("./tag");
 const userRouter = require("./user");
 const imageNoteRouter = require("./imageNote");
-const notifyRouter = require("./notify");
 const CustomError = require("../ultities/CustomError");
 
 const initRoutes = (app) => {
@@ -23,7 +22,7 @@ const initRoutes = (app) => {
   app.use("/api/v1/checklists", checklistRouter);
   app.use("/api/v1/collaborators", collaboratorRouter);
   app.use("/api/v1/images", imageNoteRouter);
-  app.use("/api/v1/notifications", notifyRouter);
+
   // Middleware xử lý 404
   app.use((req, res, next) => {
     throw new CustomError(`Note find route: ${req.originalUrl}`, 404, 1);

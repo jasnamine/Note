@@ -14,7 +14,6 @@ const noteSlice = createSlice({
   initialState,
   reducers: {},
 
-  // register
   extraReducers: (builder) => {
     // get tags
     builder

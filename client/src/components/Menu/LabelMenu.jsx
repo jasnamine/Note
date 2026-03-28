@@ -10,11 +10,9 @@ import {
 } from "@mui/material";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { addTagToNote, removeTagNote } from "../../redux/api/tagNote";
-import { useTranslation } from "react-i18next";
-
-
 
 function LabelMenu({
   anchorEl,
@@ -27,10 +25,9 @@ function LabelMenu({
 }) {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const handleTagToggle = (tagId) => {
-
     const isSelected = selectedTags.includes(tagId);
     if (isSelected) {
       if (isNewNote) {
@@ -48,11 +45,10 @@ function LabelMenu({
         dispatch(addTagToNote({ noteId, tagId }));
       }
     }
-
   };
 
   const filteredTags = tags.filter((tag) =>
-    tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+    tag.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (

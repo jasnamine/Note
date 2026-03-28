@@ -8,7 +8,7 @@ const {
   verifyRefreshToken,
 } = require("../ultities/functions");
 const CustomError = require("../ultities/CustomError");
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 require("dotenv").config();
 const crypto = require("crypto");
 
@@ -191,7 +191,6 @@ const logout = async (refreshToken, res) => {
   try {
     const payload = await verifyRefreshToken(refreshToken);
 
-    // Xóa cookie refreshToken
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
